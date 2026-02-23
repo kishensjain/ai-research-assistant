@@ -21,7 +21,7 @@ Distill is an AI-powered research assistant that lets you load multiple sources 
 
 - 🌐 **URL ingestion** — paste any webpage URL and chat with its content
 - 📄 **PDF & Word support** — upload `.pdf` and `.docx` files directly
-- 🎥 **YouTube transcripts** — paste a YouTube link and chat with the video
+- 🎥 **YouTube transcripts** — paste a YouTube link and chat with the video(powered by Supadata API)
 - 🧠 **Smart chunking** — content is split into chunks and only the most relevant ones are sent to the model
 - ⚡ **Streaming responses** — answers stream in real time
 - 📝 **Auto summary** — sources are automatically summarised when loaded
@@ -63,6 +63,7 @@ Create a `.env` file in the root:
 
 ```
 OLLAMA_API_KEY=your_key_here
+SUPADATA_API_KEY=your_key_here
 ```
 
 Or if using a different provider, update the client in `src/ui.py` accordingly.
@@ -101,15 +102,6 @@ distill/
 5. **Stream** — the response streams back in real time
 
 This is a lightweight implementation of **RAG (Retrieval-Augmented Generation)** built from scratch without any RAG framework.
-
----
-
-## Roadmap
-
-- [ ] Semantic search with embeddings
-- [ ] Save and load chat sessions
-- [ ] Deploy to Hugging Face Spaces
-- [ ] Support for more file types (CSV, TXT, EPUB)
 
 ---
 
