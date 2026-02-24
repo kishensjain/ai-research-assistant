@@ -28,26 +28,29 @@ def get_relevant_chunks(query: str, chunks: list[str], max_chars: int = 20000) -
     query_words = {
         word.strip(".,!?")
         for word in query.lower().split()
-        if word not in STOPWORDS
+        if word.strip(".,!?") not in STOPWORDS
     }
 
     scored = []
     for chunk in chunks:
-        chunk_words = set(chunk.lower().split())
-        score = len(query_words & chunk_words) # number of shared words
-        scored.append((score, chunk))
+        chunk_words = {
+            word.strip(".,!?")
+            for word in chunk.lower().split()
+        }
+        score = len(query_words & chunk_words)  # number of shared words
+        if score > 0:
+            scored.append((score, chunk))
 
     # sort by score, descending
-    scored.sort(key=lambda x : x[0], reverse=True)
+    scored.sort(key=lambda x: x[0], reverse=True)
 
     selected = []
     total_chars = 0
 
-    for score,chunk in scored:
+    for score, chunk in scored:
         if total_chars + len(chunk) > max_chars:
             break
         selected.append(chunk)
         total_chars += len(chunk)
 
     return "\n\n---\n\n".join(selected)
-    
