@@ -53,7 +53,7 @@ git clone https://github.com/yourusername/distill-AI-research-assistant.git
 cd distill-AI-research-assistant
 ```
 
-### 2. Install dependencies
+### 2. Install dependencies(make sure you have uv installed)
 
 ```bash
 uv sync
