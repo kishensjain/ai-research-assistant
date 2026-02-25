@@ -15,6 +15,8 @@ pinned: false
 
 Distill is an AI-powered research assistant that lets you load multiple sources and have a conversation with them. Paste a URL, upload a document, or drop a YouTube link — then ask questions and get answers grounded in your content.
 
+Here's the [link](https://kishensjain-distill-ai-research-assistant.hf.space/) to it
+
 ---
 
 ## Features
@@ -37,7 +39,7 @@ Distill is an AI-powered research assistant that lets you load multiple sources 
 - [BeautifulSoup4](https://www.crummy.com/software/BeautifulSoup/) — web scraping
 - [pypdf](https://pypdf.readthedocs.io/) — PDF extraction
 - [python-docx](https://python-docx.readthedocs.io/) — Word doc extraction
-- [youtube-transcript-api](https://github.com/jdepoix/youtube-transcript-api) — YouTube transcripts
+- [supadata](https://api.supadata.ai/v1/youtube/transcript) — YouTube transcripts
 - [uv](https://github.com/astral-sh/uv) — package management
 
 ---
