@@ -13,34 +13,55 @@ pinned: false
 
 > Chat with anything. URLs, PDFs, Word docs, and YouTube videos — all in one place.
 
-Distill is an AI-powered research assistant that lets you load multiple sources and have a conversation with them. Paste a URL, upload a document, or drop a YouTube link — then ask questions and get answers grounded in your content.
+Distill is a lightweight **semantic RAG (Retrieval-Augmented Generation)** research assistant that lets you load multiple sources and have grounded conversations with them.
 
-Here's the [link](https://kishensjain-distill-ai-research-assistant.hf.space/) to it
+Paste a webpage url, upload a document, or drop a YouTube link — then ask questions and get answers backed by your content.
+
+🔗 **Live Demo:**  
+https://kishensjain-distill-ai-research-assistant.hf.space/
 
 ---
 
-## Features
+## ✨ Features
 
-- 🌐 **URL ingestion** — paste any webpage URL and chat with its content
-- 📄 **PDF & Word support** — upload `.pdf` and `.docx` files directly
-- 🎥 **YouTube transcripts** — paste a YouTube link and chat with the video(powered by Supadata API)
-- 🧠 **Smart chunking** — content is split into chunks and only the most relevant ones are sent to the model
-- ⚡ **Streaming responses** — answers stream in real time
-- 📝 **Auto summary** — sources are automatically summarised when loaded
-- 💬 **Multi-turn memory** — the assistant remembers your conversation
+- 🌐 **URL ingestion** — paste any webpage and chat with its content  
+- 📄 **PDF & Word support** — upload `.pdf` and `.docx` files  
+- 🎥 **YouTube transcripts** — paste a link and chat with the video (via Supadata API)  
+- 🔎 **Semantic search** — retrieval powered by vector embeddings (not keyword matching)  
+- 🧠 **Smart chunking** — content split into overlapping chunks (~1000 chars)  
+- ⚡ **Streaming responses** — real-time answer generation  
+- 📝 **Auto summarization** — sources summarized when loaded  
+- 💬 **Multi-turn memory** — conversation history preserved  
 - 🖥️ **Gradio web UI** — clean browser-based interface
+
+---
+
+## 🏗 Architecture
+
+Distill implements semantic RAG from scratch — without any external RAG framework.
+
+**Pipeline:**
+
+1. **Ingest** — Fetch and clean content from URLs, PDFs, Word docs, or YouTube transcripts  
+2. **Chunk** — Split content into overlapping text chunks  
+3. **Embed** — Convert chunks into vector embeddings using `gemini-embedding-001`  
+4. **Retrieve** — Compute cosine similarity between query and stored embeddings  
+5. **Generate** — Send top-K relevant chunks + conversation history to the LLM  
+6. **Stream** — Return the response in real time  
 
 ---
 
 ## Tech Stack
 
-- [Gradio](https://gradio.app) — web UI
-- [OpenAI-compatible client](https://github.com/openai/openai-python) — LLM calls
-- [BeautifulSoup4](https://www.crummy.com/software/BeautifulSoup/) — web scraping
-- [pypdf](https://pypdf.readthedocs.io/) — PDF extraction
-- [python-docx](https://python-docx.readthedocs.io/) — Word doc extraction
-- [supadata](https://api.supadata.ai/v1/youtube/transcript) — YouTube transcripts
-- [uv](https://github.com/astral-sh/uv) — package management
+- **Gradio** — Web UI  
+- **Gemini API** — Embeddings (`gemini-embedding-001`)  
+- **Ollama Cloud** — LLM generation (OpenAI-compatible client)  
+- **NumPy** — Cosine similarity computation  
+- **BeautifulSoup4** — Web scraping  
+- **pypdf** — PDF extraction  
+- **python-docx** — Word document extraction  
+- **Supadata API** — YouTube transcripts  
+- **uv** — Package management  
 
 ---
 
@@ -66,6 +87,7 @@ Create a `.env` file in the root:
 ```
 OLLAMA_API_KEY=your_key_here
 SUPADATA_API_KEY=your_key_here
+GEMINI_API_KEY=your_key_here
 ```
 
 Or if using a different provider, update the client in `src/ui.py` accordingly.
@@ -85,6 +107,7 @@ uv run main.py
 distill/
 ├── main.py          # Entry point
 ├── src/
+    |── cosine_similarity.py # Cosine similarity
 │   ├── ingestion.py # URL, file, and YouTube loading
 │   ├── chunker.py   # Text splitting and relevance scoring
 │   └── ui.py        # Gradio interface and LLM chat logic
