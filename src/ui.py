@@ -4,7 +4,6 @@ from openai import OpenAI, APIConnectionError
 from dotenv import load_dotenv
 from src.chunker import retrieve_relevant_chunks, chunk_text, get_embedding
 from src.ingestion import load_text, load_file
-from src.cosine_similarity import cosine_similarity
 
 load_dotenv()
 

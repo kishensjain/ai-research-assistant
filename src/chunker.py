@@ -1,12 +1,12 @@
-import numpy as np
-from openai import OpenAI
-import os
 from src.cosine_similarity import cosine_similarity
+from dotenv import load_dotenv
+from google import genai
+import os
+import numpy as np
 
-client = OpenAI(
-    base_url="https://ollama.com/v1",
-    api_key=os.getenv("OLLAMA_API_KEY")
-)
+load_dotenv()
+
+client = genai.Client(api_key=os.getenv("GEMINI_API_KEY"))
 
 def chunk_text(text: str, chunk_size: int = 1000, overlap: int = 100) -> list[str]:
     """
@@ -49,18 +49,19 @@ def retrieve_relevant_chunks(query, chunks, chunk_embeddings, max_chars=20000):
 
     return "\n\n---\n\n".join(selected)
 
-def get_embedding(text:str) -> np.ndarray:
+def get_embedding(text: str) -> np.ndarray:
     """
     Takes a string as input and returns its embedding as a NumPy array.
     An embedding is a list of numbers that represents the meaning of text.
     """
 
-    text = text.replace("\n", " ")
-
-    response = client.embeddings.create(
-        model = "qwen3-vl:235b-cloud",
-        input = text
+    response = client.models.embed_content(
+        model="gemini-embedding-001",
+        contents=[text]
     )
 
-    embedding = response.data[0].embedding
-    return np.array(embedding)
+    embeddings = response.embeddings
+    if not embeddings:
+        raise ValueError("No embeddings returned")
+
+    return np.array(embeddings[0].values)
