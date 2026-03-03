@@ -3,10 +3,12 @@ from dotenv import load_dotenv
 from google import genai
 import os
 import numpy as np
+from sentence_transformers import SentenceTransformer
 
 load_dotenv()
 
-client = genai.Client(api_key=os.getenv("GEMINI_API_KEY"))
+embedding_model = SentenceTransformer("BAAI/bge-base-en-v1.5")
+
 
 def chunk_text(text: str, chunk_size: int = 1000, overlap: int = 100) -> list[str]:
     """
@@ -28,8 +30,20 @@ def chunk_text(text: str, chunk_size: int = 1000, overlap: int = 100) -> list[st
     return chunks
 
 
-def retrieve_relevant_chunks(query, chunks, chunk_embeddings, max_chars=20000):
-    query_embedding = get_embedding(query)
+def embed_chunks(chunks: list[str]) -> list[np.ndarray]:
+    """
+    Batch embed chunks for efficiency.
+    """
+    embeddings = embedding_model.encode(chunks)
+    return [np.array(e) for e in embeddings]
+
+
+def get_query_embedding(query: str) -> np.ndarray:
+    return np.array(embedding_model.encode(query))
+
+
+def retrieve_relevant_chunks(query: str, chunks: list[str], chunk_embeddings: list[np.ndarray], max_chars: int = 20000):
+    query_embedding = get_query_embedding(query)
 
     scores = []
     for i, emb in enumerate(chunk_embeddings):
@@ -48,20 +62,3 @@ def retrieve_relevant_chunks(query, chunks, chunk_embeddings, max_chars=20000):
         total_chars += len(chunk)
 
     return "\n\n---\n\n".join(selected)
-
-def get_embedding(text: str) -> np.ndarray:
-    """
-    Takes a string as input and returns its embedding as a NumPy array.
-    An embedding is a list of numbers that represents the meaning of text.
-    """
-
-    response = client.models.embed_content(
-        model="gemini-embedding-001",
-        contents=[text]
-    )
-
-    embeddings = response.embeddings
-    if not embeddings:
-        raise ValueError("No embeddings returned")
-
-    return np.array(embeddings[0].values)

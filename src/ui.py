@@ -2,7 +2,7 @@ import gradio as gr
 import os
 from openai import OpenAI, APIConnectionError
 from dotenv import load_dotenv
-from src.chunker import retrieve_relevant_chunks, chunk_text, get_embedding
+from src.chunker import retrieve_relevant_chunks, chunk_text, get_query_embedding
 from src.ingestion import load_text, load_file
 
 load_dotenv()
@@ -58,7 +58,7 @@ def load_sources(sources_text: str, files):
     chunk_embeddings =[]
 
     for chunk in chunks:
-        emb = get_embedding(chunk)
+        emb = get_query_embedding(chunk)
         chunk_embeddings.append(emb)
 
     log.append(
