@@ -1,7 +1,5 @@
 from src.cosine_similarity import cosine_similarity
 from dotenv import load_dotenv
-from google import genai
-import os
 import numpy as np
 from sentence_transformers import SentenceTransformer
 
